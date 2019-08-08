@@ -1,0 +1,36 @@
+.create-todo-form {
+  width: 100%;
+  border-radius: 2px;
+  margin: 0.5rem auto;
+}
+
+select {
+  display: block !important;
+}
+
+.select {
+  display: block;
+  max-width: 120px;
+  width: 100%;
+  height: auto;
+  min-height: 2.5rem;
+  border-top: none;
+}
+.datepicker {
+  width: auto;
+  max-width: 120px;
+}
+
+.submit {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .create-todo-wrapper {
+    width: 100%;
+  }
+
+  .form-container {
+    padding: 0.2rem;
+  }
+}

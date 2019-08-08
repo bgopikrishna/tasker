@@ -1,0 +1,47 @@
+<div
+  class="container d-flex alig-items-center justify-content-center create-todo-wrapper"
+>
+  <form class="create-todo-form z-depth-2" (submit)="onFormSubmit($event)">
+    <div
+      class="d-flex justify-content-around align-items-center p-4 form-container"
+    >
+      <div class="input-field ">
+        <input
+          id="name"
+          type="text"
+          class="validate"
+          required
+          [value]="todoItem.todo"
+          [(ngModel)]="todoItem.todo"
+          name="todo"
+        />
+        <label htmlFor="name">Add Task</label>
+      </div>
+      <select
+        class="select"
+        (change)="manageTodoAssignMemt($event)"
+        [(ngModel)]="todoItem.assignedTo"
+        name="Task assignment"
+      >
+        <option value="" selected disabled>Assign To</option>
+        <option value="manish">Manish</option>
+        <option value="gk">Gk</option>
+        <option value="hemanth">Hemanth</option>
+      </select>
+      <div class="input-field">
+        <input type="text" class="datepicker" name="date" id="date" />
+        <label for="date">Date</label>
+      </div>
+    </div>
+
+    <div class="input-field submit d-flex justify-content-center">
+      <button
+        class="btn waves-light purple lighten-1 d-flex alig-items-center"
+        type="submit"
+        name="action"
+      >
+        Add Task <i class="material-icons">add</i>
+      </button>
+    </div>
+  </form>
+</div>
