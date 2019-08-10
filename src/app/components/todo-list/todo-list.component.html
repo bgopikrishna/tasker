@@ -4,22 +4,13 @@
   <li class="collection-header"><h4>Tasks</h4></li>
   <li *ngFor="let todoItem of todoItems" class="collection-item">
     <div class="d-flex flex-row justify-content-between">
-      <label>
-        <input type="checkbox" [checked]="todoItem.completed" (change)="changeTodoStatus($event,todoItem.id)"/>
-        <span
-          [style.text-decoration]="
-            todoItem.completed ? 'line-through' : 'inherit'
-          "
-        >
-          {{ todoItem.todo }}
-        </span>
-      </label>
+      <span>
+        {{ todoItem.todo }}
+      </span>
 
-      <button class=" btn btn-flat red-text btn-small secondary-content">
-        <i class="material-icons" (click)="deleteTodo($event, todoItem.id)"
-          >close</i
-        >
-      </button>
+      <div class="secondary-content">
+        GK
+      </div>
     </div>
   </li>
 </ul>

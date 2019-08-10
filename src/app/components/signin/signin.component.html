@@ -1,13 +1,27 @@
 <div class="container">
-  <form>
+  <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()">
     <h5 class="blue-text lighten-3 center">Sign In</h5>
     <div class="input-field">
-      <label htmlFor="email">Email</label>
-      <input type="email" name="" id="email" required />
+      <label htmlFor="username">Username</label>
+      <input
+        type="email"
+        name="email"
+        id="email"
+        requiredtype="text"
+        id="username"
+        autocomplete="off"
+        formControlName="username"
+        required
+      />
     </div>
     <div class="input-field">
       <label htmlFor="password">Password</label>
-      <input type="password" name="" id="password" required />
+      <input
+        type="password"
+        formControlName="password"
+        id="password"
+        required
+      />
     </div>
     <div class="input-field center">
       <button class="btn blue btn-flat white-text  z-depth-1 " type="submit">
