@@ -1,0 +1,29 @@
+<ul class="collection with-header p-3 pb-0">
+  <!--Header-->
+  <h4 style="text-align: center">User Specific Tasks</h4>
+
+  <!--Selecting user option-->
+  <div class="d-flex justify-content-around align-items-center">
+    <label for="username">Select the User</label>
+    <select name="username" id="username" (change)="selectUser($event)">
+      <option disabled selected>User</option>
+      <ng-container *ngFor="let user of usersList">
+        <option [value]="user.id">{{ user.username }}</option>
+      </ng-container>
+    </select>
+  </div>
+
+  <!--Task Items-->
+  <ng-container *ngFor="let task of tasks">
+    <li class="collection-item" *ngIf="task.remind_to === currentUserId">
+      <div class="d-flex flex-row justify-content-between">
+        <span>
+          {{ task.title }}
+        </span>
+        <div class="secondary-content">
+          <span> {{ task.remainder_date | date: 'short' }} </span>
+        </div>
+      </div>
+    </li>
+  </ng-container>
+</ul>

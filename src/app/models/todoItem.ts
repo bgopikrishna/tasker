@@ -6,10 +6,10 @@ export class TodoItem {
 }
 
 export class TaskItem {
-  id: number;
-  title: string;
-  created_by: number;
-  remind_to: number;
-  remainder_date: string;
-  created_date: 'string';
+  id?: number;
+  title?: string;
+  created_by?: number;
+  remind_to?: number;
+  remainder_date?: string;
+  created_date?: string;
 }

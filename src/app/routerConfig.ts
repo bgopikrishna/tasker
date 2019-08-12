@@ -3,6 +3,8 @@ import { NotificationsComponent } from './components/notifications/notifications
 import { TodoListComponent } from './components/todo-list/todo-list.component';
 import { SigninComponent } from './components/signin/signin.component';
 import { AuthGuard } from './auth.guard';
+import { CreateTodoComponent } from './components/create-todo/create-todo.component';
+import { UserTasksComponent } from './components/user-tasks/user-tasks.component';
 
 export const appRoutes: Routes = [
   {
@@ -12,7 +14,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'home',
-    component: TodoListComponent,
+    component: CreateTodoComponent,
     canActivate: [AuthGuard],
   },
   {
@@ -23,5 +25,15 @@ export const appRoutes: Routes = [
   {
     path: 'signin',
     component: SigninComponent,
+  },
+  {
+    path: 'tasks',
+    component: TodoListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'usertasks',
+    component: UserTasksComponent,
+    canActivate: [AuthGuard],
   },
 ];

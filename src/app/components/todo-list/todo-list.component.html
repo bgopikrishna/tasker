@@ -1,15 +1,12 @@
-<app-create-todo (addTaskEvent)="onAddTodo($event)"></app-create-todo>
-
 <ul class="collection with-header p-3 pb-0">
   <li class="collection-header"><h4>Tasks</h4></li>
   <li *ngFor="let todoItem of todoItems" class="collection-item">
     <div class="d-flex flex-row justify-content-between">
       <span>
-        {{ todoItem.todo }}
+        {{ todoItem.title }}
       </span>
-
       <div class="secondary-content">
-        GK
+        <span> {{ todoItem.created_date | date: 'short' }} </span>
       </div>
     </div>
   </li>

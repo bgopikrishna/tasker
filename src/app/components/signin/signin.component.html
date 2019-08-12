@@ -2,7 +2,7 @@
   <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()">
     <h5 class="blue-text lighten-3 center">Sign In</h5>
     <div class="input-field">
-      <label htmlFor="username">Username</label>
+      <label for="username">Username</label>
       <input
         type="email"
         name="email"
@@ -13,7 +13,7 @@
         formControlName="username"
         required
       />
-    </div>
+    </div> 
     <div class="input-field">
       <label htmlFor="password">Password</label>
       <input

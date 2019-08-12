@@ -5,20 +5,20 @@
     </a>
     <ul id="nav-mobile" class="right ">
       <li>
-        <a aria-current="page" class=" lighten-3 active" routerLink="/">
+        <a aria-current="page" class=" lighten-3 active" routerLink="/tasks">
           Tasks
         </a>
       </li>
       <li>
-        <a aria-current="page" class=" lighten-3 active" routerLink="/">
+        <a
+          aria-current="page"
+          class=" lighten-3 active"
+          routerLink="/usertasks"
+        >
           Users
         </a>
       </li>
-      <li>
-        <a routerLink="/">
-          <i class="material-icons" title="logout">power_settings_new</i>
-        </a>
-      </li>
+
       <li>
         <a
           aria-current="page"
@@ -27,6 +27,11 @@
           title="notifications"
         >
           <i class="material-icons">notifications</i>
+        </a>
+      </li>
+      <li>
+        <a (click)="logout()">
+          <i class="material-icons" title="logout">power_settings_new</i>
         </a>
       </li>
     </ul>

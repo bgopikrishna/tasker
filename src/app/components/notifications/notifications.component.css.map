@@ -1,9 +1,0 @@
-{
-    "version": 3,
-    "mappings": "AAAA,AACE,cADY,CACZ,gBAAgB,CAAC,GAAG,CAAC;EACnB,OAAO,EAAE,IAAI;EACb,eAAe,EAAE,aAAa;EAC9B,WAAW,EAAE,QAAQ;CACtB",
-    "sources": [
-        "notifications.component.scss"
-    ],
-    "names": [],
-    "file": "notifications.component.css"
-}

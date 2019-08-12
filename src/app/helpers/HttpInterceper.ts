@@ -7,6 +7,10 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+/**
+ * A JSON Web Token inspector for adding token to the Headers for Authorization
+ */
+
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
   constructor() {}

@@ -1,40 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { TodoItem } from 'src/app/models/todoItem';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { TaskItem } from 'src/app/models/todoItem';
 import { TasklistService } from 'src/app/services/tasklist.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent implements OnInit, OnDestroy {
+  private subsciprtion: Subscription = new Subscription();
+
+  todoItems: TaskItem[];
+
   constructor(private taskListService: TasklistService) {}
 
-  todoItems: TodoItem[];
-
   ngOnInit(): void {
-    this.taskListService
-      .getTasks()
-      .subscribe(todos => (this.todoItems = todos));
+    //Subscribing to the task Items from the server
+    this.subsciprtion.add(
+      this.taskListService.getTasks().subscribe(this.setTaskItems())
+    );
   }
 
-  onAddTodo(todoItem: TodoItem): void {
-    this.taskListService.addTask(todoItem);
-    console.log(this.todoItems);
+  ngOnDestroy() {
+    this.subsciprtion.unsubscribe();
   }
+  /****************** Private Methods **************************/
 
-  // deleteTodo($event, id: number | string) {
-  //   const newTodos = this.todoItems.filter(todoItem => todoItem.id !== id);
-  //   this.todoItems = newTodos;
-  // }
-
-  // changeTodoStatus($event, id: number | string) {
-  //   const newTodos = this.todoItems.map(todoItem => {
-  //     if (todoItem.id === id) {
-  //       todoItem.completed = !todoItem.completed;
-  //     }
-
-  //     return todoItem;
-  //   });
-  // }
+  /**
+   * Set the `todoItems` from `tasklistService`
+   */
+  private setTaskItems(): (value: boolean) => void {
+    return sucess => {
+      if (sucess) {
+        this.todoItems = this.taskListService.todoItems;
+      }
+    };
+  }
 }
