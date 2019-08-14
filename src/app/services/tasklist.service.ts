@@ -1,30 +1,33 @@
 import { Injectable } from '@angular/core';
 import { TaskItem } from '../models/todoItem';
-import { catchError, map, tap, mapTo } from 'rxjs/operators';
+import { catchError, tap, mapTo } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { SyncService } from './sync.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TasklistService {
-  //Http options
-  private httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-  };
-  //GetAndAddtasks url
-  private getAndAddTasksUrl = 'http://localhost:8000/api/create-task/';
+  //GetAndAddtasks Endpoint
+  private getAndAddTasksEndpoint: string = 'api/create-task/';
 
   todoItems: TaskItem[];
-  constructor(private http: HttpClient) {}
+
+  constructor(private syncService: SyncService) {}
 
   /**
    *  A method Get the list of tasks from the server
    */
   getTasks(): Observable<boolean> {
-    return this.http.get<TaskItem[]>(this.getAndAddTasksUrl).pipe(
+    return this.syncService.syncGet(this.getAndAddTasksEndpoint).pipe(
       tap(tasks => {
-        this.todoItems = tasks;
+        this.todoItems = tasks.sort(
+          (a: TaskItem, b: TaskItem): any => {
+            const dateA: any = new Date(a.created_date);
+            const dateB: any = new Date(b.created_date);
+            return dateB - dateA;
+          }
+        );
       }),
       mapTo(true),
       catchError(error => {
@@ -39,17 +42,15 @@ export class TasklistService {
    * @param task - Task which needs to be added in the database
    */
   addTask(task: TaskItem): Observable<boolean> {
-    return this.http
-      .post<TaskItem>(this.getAndAddTasksUrl, task, this.httpOptions)
-      .pipe(
-        tap(tasks => {
-          console.log('success');
-        }),
-        mapTo(true),
-        catchError(() => {
-          alert('Error Adding Task');
-          return of(false);
-        })
-      );
+    return this.syncService.syncPost(this.getAndAddTasksEndpoint, task).pipe(
+      tap(task => {
+        console.log('Task added successfully:', task);
+      }),
+      mapTo(true),
+      catchError(() => {
+        alert('Error Adding Task');
+        return of(false);
+      })
+    );
   }
 }

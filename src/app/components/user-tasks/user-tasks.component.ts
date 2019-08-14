@@ -25,11 +25,19 @@ export class UserTasksComponent implements OnInit, OnDestroy {
   ngOnInit() {
     //Get the userslist from the server
     this.subscription.add(
-      this.userService.getUsers().subscribe(this.setUserList())
+      this.userService.getUsers().subscribe((success: boolean) => {
+        if (success) {
+          this.usersList = this.userService.userList;
+        }
+      })
     );
     //Get the tasklist from the server
     this.subscription.add(
-      this.taskListService.getTasks().subscribe(this.setTaskItems())
+      this.taskListService.getTasks().subscribe(sucess => {
+        if (sucess) {
+          this.tasks = this.taskListService.todoItems;
+        }
+      })
     );
   }
 
@@ -37,35 +45,6 @@ export class UserTasksComponent implements OnInit, OnDestroy {
     //unsubscribe from all subscrptions to avoid memory leak
     this.subscription.unsubscribe();
   }
-
-  /*************************** Private Methods  ********************************/
-
-  /**
-   * Set the taskItems from the tasklistService
-   */
-  private setTaskItems(): (value: boolean) => void {
-    return sucess => {
-      if (sucess) {
-        this.tasks = this.taskListService.todoItems;
-      }
-    };
-  }
-
-  /**
-   * Set the userlist
-   */
-  private setUserList(): (value: boolean) => void {
-    return (success: boolean) => {
-      if (success) {
-        this.usersList = this.userService.userList;
-      }
-    };
-  }
-
-  /**
-   *
-   * @param index - Trackby index
-   */
 
   public trackByfn(index: number): number {
     return index;

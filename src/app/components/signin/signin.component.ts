@@ -29,7 +29,7 @@ export class SigninComponent implements OnInit, OnDestroy {
     this.loginForm = this.formBuilder.group({
       username: [''],
       password: [''],
-    }); 
+    });
   }
 
   ngOnDestroy() {
@@ -54,6 +54,15 @@ export class SigninComponent implements OnInit, OnDestroy {
 
   /**************************Private Methods  ***********************************/
 
+  //Refresh the token if the token is already exists in the `localStorage` and sigin the user
+  private refreshTokenIfItExists(): void {
+    if (localStorage.getItem('authToken')) {
+      this.subscription.add(
+        this.loginService.refreshToken().subscribe(this.signInUser())
+      );
+    }
+  }
+
   /**
    * Sign in the user, if the jwt is  success
    * @param {boolean} sucess - `true` if jwt is success else  `false`
@@ -65,14 +74,5 @@ export class SigninComponent implements OnInit, OnDestroy {
         this.router.navigate(['/home']);
       }
     };
-  }
-
-  //Refresh the token if the token is already exists in the `localStorage` and sigin the user
-  private refreshTokenIfItExists(): void {
-    if (localStorage.getItem('authToken')) {
-      this.subscription.add(
-        this.loginService.refreshToken().subscribe(this.signInUser())
-      );
-    }
   }
 }

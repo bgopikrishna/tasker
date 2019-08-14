@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginCredentials, Token } from '../models/loginModel';
-import { catchError, map, tap, mapTo } from 'rxjs/operators';
+import { catchError, tap, mapTo } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { SyncService } from './sync.service';
 
 /**
  * A login service to login, logout the user
@@ -12,42 +11,35 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class LoginService {
-  //Http options
-  private httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-  };
+  //Login Endpoint
+  private loginEndPoint: string = 'api-token-auth/';
+  //Token refresh Endpoint
+  private tokenRefreshEndpoint: string = 'api-token-refresh/';
 
-  //Login URL
-  private loginUrl: string = 'http://localhost:8000/api-token-auth/';
-  //Token refresh url
-  private tokenRefreshUrl = 'http://localhost:8000/api-token-refresh/';
-
-  //User Logged In status
+  //User LoggedIn status
   isUserLoggedIn: boolean = false;
-  //Logged In user's username
+  //LoggedIn user's username
   loggedUserName: string;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private syncService: SyncService) {}
 
   /**
    * Login the user
    * @param credentials - username, password to login the user
    */
   login(credentials: LoginCredentials): Observable<boolean> {
-    return this.http
-      .post<Token>(this.loginUrl, credentials, this.httpOptions)
-      .pipe(
-        tap(resp => {
-          if (resp.token) {
-            this.doLoginUser(resp, credentials.username);
-          }
-        }),
-        mapTo(true),
-        catchError(error => {
-          alert(error.error);
-          return of(false);
-        })
-      );
+    return this.syncService.syncPost(this.loginEndPoint, credentials).pipe(
+      tap(resp => {
+        if (resp.token) {
+          this.doLoginUser(resp, credentials.username);
+        }
+      }),
+      mapTo(true),
+      catchError(error => {
+        alert(error.error);
+        return of(false);
+      })
+    );
   }
   /**
    * Refresh the user token
@@ -55,20 +47,18 @@ export class LoginService {
   refreshToken(): Observable<boolean> {
     const authToken = JSON.parse(localStorage.getItem('authToken'));
 
-    return this.http
-      .post<Token>(this.tokenRefreshUrl, authToken, this.httpOptions)
-      .pipe(
-        tap(resp => {
-          if (resp.token) {
-            this.doRefreshToken(resp);
-          }
-        }),
-        mapTo(true),
-        catchError(error => {
-          console.log('token refresh erro');
-          return of(false);
-        })
-      );
+    return this.syncService.syncPost(this.tokenRefreshEndpoint, authToken).pipe(
+      tap(resp => {
+        if (resp.token) {
+          this.doRefreshToken(resp);
+        }
+      }),
+      mapTo(true),
+      catchError(error => {
+        console.log('token refresh error:', error);
+        return of(false);
+      })
+    );
   }
 
   /**
@@ -98,16 +88,12 @@ export class LoginService {
   }
 
   /**
-   *
-   * @param token - Auth token from the server
+   * store the authtoken returned from the server in the local storage
+   * @param token - Auth token returned from the server
    */
   private storeAuthToken(token: Token) {
     this.changeLoginStatus(true);
     localStorage.setItem('authToken', JSON.stringify(token));
-  }
-
-  private getToken() {
-    return localStorage.getItem('token');
   }
 
   isUserLogged() {

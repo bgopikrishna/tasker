@@ -71,7 +71,9 @@ export class CreateTodoComponent implements OnInit {
       remind_to,
     };
 
-    this.doAddTask(task);
+    if (this.addTaskForm.valid) {
+      this.doAddTask(task);
+    }
   }
 
   /**
@@ -80,8 +82,14 @@ export class CreateTodoComponent implements OnInit {
    */
   private doAddTask(task: TaskItem) {
     this.subscription.add(
-      this.taskListService.addTask(task).subscribe(taskSuccessMessage())
+      this.taskListService.addTask(task).subscribe(success => {
+        //Let the user know if the task is added or not
+        if (success) {
+          alert('Task Added');
+        } else alert('Error Adding Task');
+      })
     );
+    //Navigate to tasks page
     this.router.navigateByUrl('/tasks');
     //Reset the form after adding the task
     this.addTaskForm.reset();
@@ -91,15 +99,4 @@ export class CreateTodoComponent implements OnInit {
     //Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
-}
-
-/**
- * A fuction to let the user know, if the task is added or not.
- */
-function taskSuccessMessage(): (value: boolean) => void {
-  return success => {
-    if (success) {
-      alert('Task Added');
-    } else alert('Error Adding Task');
-  };
 }

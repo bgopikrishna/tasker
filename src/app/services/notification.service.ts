@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, tap, mapTo } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, mapTo, tap } from 'rxjs/operators';
 import { Notification } from '../models/notification';
+import { SyncService } from './sync.service';
 
 /**
  * A notification service to get the notifations from the server
@@ -12,14 +12,23 @@ import { Notification } from '../models/notification';
   providedIn: 'root',
 })
 export class NotificationService {
-  private notificationsUrl = 'http://localhost:8000/notifications/';
+  private notificationsUrl: string = 'notifications/';
+  // private webSocketUrl: string =
+  //   'ws://localhost:80/ws/foobar?subscribe-broadcast&publish-broadcast&echo';
 
   notifications: Notification[] = [];
+  ws: WebSocket;
 
-  constructor(private http: HttpClient) {}
+  constructor(private syncService: SyncService) {}
 
+  /**
+   * A method to make request to get notifications from the server
+   * @returns {Observable<boolean>}
+   */
   getNotifications(): Observable<boolean> {
-    return this.http.get<Notification[]>(this.notificationsUrl).pipe(
+    // this.setWebsocket();
+
+    return this.syncService.syncGet(this.notificationsUrl).pipe(
       tap(notifications => {
         if (notifications.length !== 0) {
           //Set Notifications from the server
@@ -27,15 +36,23 @@ export class NotificationService {
         }
       }),
       mapTo(true),
-      catchError(error => {
+      catchError(() => {
         console.trace('error');
         return of(false);
       })
     );
   }
 
+  // setWebsocket = () => {
+  //   this.ws = new WebSocket(this.webSocketUrl);
+
+  //   this.ws.onopen = () => {
+  //     console.log('Socket started');
+  //   };
+  // };
+
   /**
-   * set the notifiactions return from the server
+   * set the notififcations returned from the server
    * @param notifications - notifications array
    */
   private setNotificationsList(notifications: Notification[]): void {

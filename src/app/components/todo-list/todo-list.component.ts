@@ -18,23 +18,16 @@ export class TodoListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     //Subscribing to the task Items from the server
     this.subsciprtion.add(
-      this.taskListService.getTasks().subscribe(this.setTaskItems())
+      this.taskListService.getTasks().subscribe(sucess => {
+        if (sucess) {
+          //Set the `todoItems` from `tasklistService`
+          this.todoItems = this.taskListService.todoItems;
+        }
+      })
     );
   }
 
   ngOnDestroy() {
     this.subsciprtion.unsubscribe();
-  }
-  /****************** Private Methods **************************/
-
-  /**
-   * Set the `todoItems` from `tasklistService`
-   */
-  private setTaskItems(): (value: boolean) => void {
-    return sucess => {
-      if (sucess) {
-        this.todoItems = this.taskListService.todoItems;
-      }
-    };
   }
 }

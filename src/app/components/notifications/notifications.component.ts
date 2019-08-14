@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Notification } from '../../models/notification';
 import { NotificationService } from 'src/app/services/notification.service';
 import { Subscription } from 'rxjs';
@@ -8,14 +8,11 @@ import { Subscription } from 'rxjs';
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
 })
-export class NotificationsComponent implements OnInit {
+export class NotificationsComponent implements OnInit, OnDestroy {
   notificationList: Notification[] = [];
-  private sunscription: Subscription = new Subscription();
+  private subscription: Subscription = new Subscription();
 
-  constructor(
-    private zone: NgZone,
-    private notificationService: NotificationService
-  ) {}
+  constructor(private notificationService: NotificationService) {}
 
   ngOnInit(): void {
     //To run the notification service without effecting the performance
@@ -23,28 +20,21 @@ export class NotificationsComponent implements OnInit {
     this.runNotificationsFetcher();
   }
 
-  private runNotificationsFetcher() {
-    this.zone.runOutsideAngular(() => {
-      setInterval(() => {
-        this.sunscription.add(
-          this.notificationService
-            .getNotifications()
-            .subscribe(this.setNotificationList())
-        );
-      }, 1000);
-    });
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
-  /*****************   Private Methods  *****************************/
-
-  /**
-   * For setting the `notificationList` with the notifications from the server
-   */
-  private setNotificationList(): (value: boolean) => void {
-    return (success: boolean) => {
-      if (success) {
-        this.notificationList = this.notificationService.notifications;
-      }
-    };
+  private runNotificationsFetcher() {
+    setInterval(() => {
+      this.subscription.add(
+        this.notificationService
+          .getNotifications()
+          .subscribe((success: boolean) => {
+            if (success) {
+              this.notificationList = this.notificationService.notifications;
+            }
+          })
+      );
+    }, 1000);
   }
 }

@@ -1,29 +1,25 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, tap, mapTo } from 'rxjs/operators';
+import { catchError, tap, mapTo } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../models/user';
+import { SyncService } from './sync.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
-  private httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-  };
-
   //get the userlist url
-  private userlistUrl = 'http://localhost:8000/api/users/';
+  private userlistEndpoint: string = 'api/users/';
 
   userList: User[];
 
-  constructor(private http: HttpClient) {}
+  constructor(private syncService: SyncService) {}
 
   /**
    * A method to get the user list from the server
    */
   getUsers(): Observable<boolean> {
-    return this.http.get<User[]>(this.userlistUrl).pipe(
+    return this.syncService.syncGet(this.userlistEndpoint).pipe(
       tap(users => {
         if (users.length !== 0) {
           this.setUserList(users);
